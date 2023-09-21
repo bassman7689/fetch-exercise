@@ -5,10 +5,10 @@ type ProcessReceipt struct {
 	PurchaseDate string `json:"purchaseDate" validate:"required,datetime=2006-01-02"`
 	PurchaseTime string `json:"purchaseTime" validate:"required,datetime=15:04"`
 	Items []*ProcessReceiptItem `json:"items" validate:"required,dive,required"`
-	Total string `json:"total" validate:"required"`
+	Total string `json:"total" validate:"min=4,numeric"`
 }
 
 type ProcessReceiptItem struct {
 	ShortDescription string  `json:"shortDescription" validate:"required"`
-	Price string `json:"price" validate:"required"`
+	Price string `json:"price" validate:"min=4,numeric"`
 }
