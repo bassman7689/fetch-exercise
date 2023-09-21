@@ -5,4 +5,8 @@ If you have installed docker through Docker Desktop, you shouldn't need to follo
 installing the compose plugin. If you didn't you can see how to install the compose plugin [here](https://docs.docker.com/compose/install/).
 
 To run the application, you should only have to run the command:
+```
+docker compose up -d
+```
 
+This will build the docker image and start the docker container running on localhost:3000
