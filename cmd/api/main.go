@@ -1,16 +1,24 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/bassman7689/fetch-exercise/pkg/config"
+	"github.com/bassman7689/fetch-exercise/pkg/server"
 )
 
 func main() {
 	conf, err := config.Load()
 	if err != nil {
-		log.Fatalf("err: %+v\n", err)
+		log.Fatalln(err)
 	}
-	fmt.Printf("%+v\n", conf)
+
+	srv, err := server.New(conf)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	if err := srv.Run(); err != nil {
+		log.Fatalln(err)
+	}
 }

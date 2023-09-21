@@ -1,22 +1,34 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"io/fs"
+
+	"github.com/spf13/viper"
+)
 
 type Config struct {
 	ListenAddr string `mapstructure:"LISTEN_ADDR"`
-	DatabaseURL string `mapstructure:"DATABASE_URL"`
 }
 
 func Load() (*Config, error) {
 	viper.AutomaticEnv()
-
-	viper.SetConfigFile(".env")
-
-	if err := viper.ReadInConfig(); err != nil {
+	if err := viper.BindEnv("LISTEN_ADDR"); err != nil {
 		return nil, err
 	}
 
+
+	viper.SetConfigFile(".env")
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(*fs.PathError); !ok {
+			return nil, err
+		}
+	}
+
+
 	config := &Config{}
-	err := viper.Unmarshal(config)
-	return config, err
+	if err := viper.Unmarshal(config); err != nil {
+		return nil, err
+	}
+
+	return config, nil
 }
