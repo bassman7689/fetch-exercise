@@ -2,10 +2,12 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/gorilla/mux"
 
 	"github.com/bassman7689/fetch-exercise/pkg/requests"
 	"github.com/bassman7689/fetch-exercise/pkg/responses"
@@ -59,4 +61,23 @@ func (rc *ReceiptsController) Process(w http.ResponseWriter, r *http.Request) {
 }
 
 func (rc *ReceiptsController) Points(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok {
+		handleError(w, http.StatusInternalServerError, fmt.Sprintf("Invalid request url reached Points Handler %v", r.URL))
+		return
+	}
+
+	receipt, err := rc.store.GetReceiptById(id)
+	if err != nil {
+		handleError(w, http.StatusInternalServerError, fmt.Sprintf("error while looking up receipt: %v", err))
+		return
+	}
+
+	if receipt == nil {
+		handleError(w, http.StatusNotFound, "No receipt found for that id")
+		return
+	}
+
+	handleResponse(w, http.StatusOK, &responses.Points{Points: receipt.Points})
 }

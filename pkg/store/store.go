@@ -43,7 +43,7 @@ func (ms *MemoryStore) ProcessReceipt(prr *requests.ProcessReceipt) (string, err
 		_, found = ms.receipts[id];
 	}
 
-	ms.receipts[id] = &models.Receipt{
+	receipt := &models.Receipt{
 		ID: id,
 		Retailer: prr.Retailer,
 		PurchaseDate: prr.PurchaseDate,
@@ -51,6 +51,9 @@ func (ms *MemoryStore) ProcessReceipt(prr *requests.ProcessReceipt) (string, err
 		Items: items,
 		Total: prr.Total,
 	}
+
+	receipt.CalculatePoints()
+	ms.receipts[id] = receipt
 
 	return id, nil
 }
